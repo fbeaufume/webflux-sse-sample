@@ -4,4 +4,5 @@ This is a sample Spring Boot reactive application that uses SSE (Server-Sent Eve
 
 Run with `mvn spring-boot:run`.
 
-Then connect to <http://localhost:8080/>.
+Then connect to <http://localhost:8080/index.html>. Note that `index.html` is required in the URL
+because of <https://github.com/spring-projects/spring-boot/issues/9785>.

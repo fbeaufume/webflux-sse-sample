@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+</head>
+<body style="text-align: center">
+<div style="font-weight: bold">Sample WebFlux SSE Chat</div>
+<br/>
+<div><textarea id="messages" cols="80" rows="20" readonly="readonly"></textarea></div>
+<br/>
+<div>User name: <input id="username" type="text" size="20" autofocus/></div>
+<br/>
+<div>Message: <input id="message" type="text" size="60"/>
+    <button onclick="sendMessage()">Send</button>
+</div>
+<script>
+    var messagesOutput, userNameInput, messageInput, eventSource;
+
+    window.addEventListener("load", function () {
+            messagesOutput = document.getElementById("messages");
+            userNameInput = document.getElementById("username");
+            messageInput = document.getElementById("message");
+
+            // Connect to the server
+            eventSource = new EventSource("/receive");
+
+            // Receive messages
+            eventSource.onmessage = function (event) {
+                messagesOutput.value += event.data + '\r';
+            };
+            eventSource.onerror = function (e) {
+                console.log("EventSource failed: " + e);
+            };
+        },
+        false);
+
+    function sendMessage() {
+        var message = (userNameInput.value === '' ? "[Anonymous] " : '[' + userNameInput.value + '] ') + messageInput.value;
+        fetch("/send", {method: "POST", body: message}).then(function () {
+            messageInput.value = "";
+            messageInput.focus();
+        });
+    }
+</script>
+</body>
+</html>
